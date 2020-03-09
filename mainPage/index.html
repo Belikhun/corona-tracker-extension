@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Corona Tracker</title>
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/fonts/calibri/calibri.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/fonts/consolas/consolas.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/fonts/opensans/opensans.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/fonts/nunito/nunito.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/fonts/fontawesome/fontawesome.css" />
+
+    <!-- Library -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/default.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/scrollBar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/input.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/table.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/switch.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/progressBar.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/spinner.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/textView.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/assets/css/button.css" />
+
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+    <!-- Analytics Script -->
+    <script type="text/javascript" src="analytics.js"></script>
+    <script type="text/javascript" async src="https://ssl.google-analytics.com/ga.js"></script>
+</head>
+
+<body class="dark">
+    <div class="container">
+        <div class="loadingWrapper" id="loadingWrapper">
+            <span class="simple-spinner"></span>
+        </div>
+
+        <div class="header">
+            <span class="box" id="vietnamBox">
+                <img class="icon" src="vietnam.png">
+                <t class="title">Việt Nam</t>
+                <t class="lastUpdate" id="vietnamLastUpdate">00:00:00 00/00/0000</t>
+    
+                <t class="confirmed" id="vietnamConfirmed">00</t>
+    
+                <div class="detail">
+                    <t class="recovered" id="vietnamRecovered">00</t>
+                    <span class="seperator"></span>
+                    <t class="death" id="vietnamDeath">00</t>
+                </div>
+            </span>
+
+            <span class="box" id="worldBox">
+                <img class="icon" src="world.png">
+                <t class="title">Thế Giới</t>
+                <t class="lastUpdate" id="worldLastUpdate">00:00:00 00/00/0000</t>
+    
+                <t class="confirmed" id="worldConfirmed">00</t>
+    
+                <div class="detail">
+                    <t class="recovered" id="worldRecovered">00</t>
+                    <span class="seperator"></span>
+                    <t class="death" id="worldDeath">00</t>
+                </div>
+            </span>
+        </div>
+
+        <div class="provinceList">
+            <t class="title" id="provinceListTitle">0 Tỉnh Thành Có Ca Nhiễm COVID-19</t>
+
+            <div class="list" id="provinceList"></div>
+        </div>
+
+        <div class="footer">
+            <t>Made By <a href="https://www.facebook.com/belivipro9x99" target="_blank">Belikhun</a></t>
+            <t id="popout">(POPOUT)</t>
+            <t>Live Data Provided By <a href="https://corona.kompa.ai/" target="_blank">kompa.ai</a></t>
+        </div>
+    </div>
+
+    <!-- Javascript lib -->
+    <script type="text/javascript" src="/assets/js/belibrary.js"></script>
+    <script type="text/javascript" src="/assets/js/errorHandler.js"></script>
+
+    <!-- Main script -->
+    <script type="text/javascript" src="core.js"></script>
+</body>
+
+</html>

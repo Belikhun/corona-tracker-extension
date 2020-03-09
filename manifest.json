@@ -1,0 +1,26 @@
+{
+    "name": "Thông tin dịch COVID-19",
+    "version": "1.0",
+    "description": "Kiểm tra và theo dõi thông tin dịch Corona",
+    "manifest_version": 2,
+    "minimum_chrome_version": "16.0.884",
+    "permissions": [
+        "https://ncov-data.herokuapp.com/*",
+        "https://coronastatus.000webhostapp.com/*"
+    ],
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://ncov-data.herokuapp.com https://coronastatus.000webhostapp.com; object-src 'self'",
+    "browser_action": {
+        "default_title": "Corona Tracker\n\nXem thông tin dịch",
+        "default_icon": {
+            "16": "assets/img/icon@16x16.png",
+            "32": "assets/img/icon@32x32.png",
+            "64": "assets/img/icon@64x64.png"
+        },
+        "default_popup": "mainPage/index.html"
+    },
+    "icons": {
+        "32": "assets/img/icon@32x32.png",
+        "64": "assets/img/icon@64x64.png",
+        "128": "assets/img/icon@128x128.png"
+    }
+}
