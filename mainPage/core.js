@@ -1,7 +1,7 @@
 //? |-----------------------------------------------------------------------------------------------|
 //? |  /mainPage/core.js                                                                            |
 //? |                                                                                               |
-//? |  Copyright (c) 2018-2019 Belikhun. All right reserved                                         |
+//? |  Copyright (c) 2018-2020 Belikhun. All right reserved                                         |
 //? |  Licensed under the MIT License. See LICENSE in the project root for license information.     |
 //? |-----------------------------------------------------------------------------------------------|
 
@@ -36,6 +36,7 @@ const core = {
 	provinceList: $("#provinceList"),
 	provinceListTitle: $("#provinceListTitle"),
 	loadingWrapper: $("#loadingWrapper"),
+	reloadTimeout: null,
 	data: {},
 
 	async init() {
@@ -45,7 +46,7 @@ const core = {
 		triBg(this.vietnam.container, { color: "darkRed" });
 		triBg(this.world.container, { color: "dark" });
 
-		await this.reloadData();
+		await this.__reloadHandler();
 		$("#popout").addEventListener("mouseup", () => {
 			chrome.windows.create({
 				url: chrome.extension.getURL("/mainPage/index.html"),
@@ -55,9 +56,21 @@ const core = {
 				setSelfAsOpener: true
 			});
 		});
-
-		setInterval(() => this.reloadData(), this.UPDATE_INTERVAL);
 	},
+
+	async __reloadHandler() {
+        clearTimeout(this.reloadTimeout);
+        var timer = new stopClock();
+
+        try {
+            await this.reloadData();
+        } catch(e) {
+            //? IGNORE ERROR
+            clog("ERRR", e);
+        }
+        
+        this.reloadTimeout = setTimeout(() => this.__reloadHandler(), this.UPDATE_INTERVAL - (timer.stop * 1000));
+    },
 
 	update() {
 		let _g = this.data.global;
@@ -76,6 +89,7 @@ const core = {
 
 		emptyNode(this.provinceList);
 		this.provinceListTitle.innerText = `${this.data.vietnam.list.length} Tỉnh Thành Có Ca Nhiễm COVID-19`;
+		let vietnamConfirmedMax = Math.max(...this.data.vietnam.list.map((i) => i.confirmed));
 
 		for (let item of this.data.vietnam.list) {
 			let _n = buildElementTree("div", "item", [
@@ -98,10 +112,10 @@ const core = {
 			_n.obj.info.innerHTML = `<yl>${item.confirmed}</yl><s></s><gr>${item.recovered}</gr><s></s><rd>${item.deaths}</rd>`;
 
 			setTimeout(() => {
-				_n.obj.bar.confirmed.style.width = `${item.confirmed / _d.confirmed * 100}%`;
-				_n.obj.bar.recovered.style.width = `${item.recovered / _d.confirmed * 100}%`;
-				_n.obj.bar.deaths.style.width = `${item.deaths / _d.confirmed * 100}%`;
-			}, 100);
+				_n.obj.bar.confirmed.style.width = `${item.confirmed / vietnamConfirmedMax * 100}%`;
+				_n.obj.bar.recovered.style.width = `${item.recovered / vietnamConfirmedMax * 100}%`;
+				_n.obj.bar.deaths.style.width = `${item.deaths / vietnamConfirmedMax * 100}%`;
+			}, 200);
 
 			_n.obj.title = [
 				`Cập nhật lúc ${(new Date(item.update * 1000)).toLocaleString()}`,

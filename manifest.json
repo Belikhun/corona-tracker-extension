@@ -1,6 +1,6 @@
 {
     "name": "Thông tin dịch COVID-19",
-    "version": "1.0",
+    "version": "2.1",
     "description": "Kiểm tra và theo dõi thông tin dịch Corona",
     "manifest_version": 2,
     "minimum_chrome_version": "16.0.884",
@@ -13,6 +13,10 @@
             "64": "assets/img/icon@64x64.png"
         },
         "default_popup": "mainPage/index.html"
+    },
+    "permissions": ["storage", "notifications"],
+    "background": {
+        "scripts": ["/assets/js/belibrary.js", "/background.js"]
     },
     "icons": {
         "32": "assets/img/icon@32x32.png",
