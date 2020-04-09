@@ -7,7 +7,8 @@
 
 const SERVER = [
 	"https://ncov-data.herokuapp.com",
-	"http://coronastatus.000webhostapp.com"
+	"https://corona-tracker-data.herokuapp.com",
+	"https://ncov-data.000webhostapp.com"
 ]
 
 const API = {
@@ -70,7 +71,11 @@ const core = {
         }
         
         this.reloadTimeout = setTimeout(() => this.__reloadHandler(), this.UPDATE_INTERVAL - (timer.stop * 1000));
-    },
+	},
+	
+	__f(n) {
+		return new Intl.NumberFormat().format(n)
+	},
 
 	update() {
 		let _g = this.data.global;
@@ -78,14 +83,14 @@ const core = {
 
 
 		this.world.lastUpdate.innerText	=	(new Date(this.data.global.update * 1000)).toLocaleString();
-		this.world.confirmed.innerText	=	_g.confirmed;
-		this.world.recovered.innerText	=	_g.recovered;
-		this.world.death.innerText		=	_g.deaths;
+		this.world.confirmed.innerText	=	this.__f(_g.confirmed);
+		this.world.recovered.innerText	=	this.__f(_g.recovered);
+		this.world.death.innerText		=	this.__f(_g.deaths);
 
-		this.vietnam.lastUpdate.innerText = (new Date(this.data.vietnam.update * 1000)).toLocaleString();
-		this.vietnam.confirmed.innerText	=	_d.confirmed;
-		this.vietnam.recovered.innerText	=	_d.recovered;
-		this.vietnam.death.innerText		=	_d.deaths;
+		this.vietnam.lastUpdate.innerText	= (new Date(this.data.vietnam.update * 1000)).toLocaleString();
+		this.vietnam.confirmed.innerText	=	this.__f(_d.confirmed);
+		this.vietnam.recovered.innerText	=	this.__f(_d.recovered);
+		this.vietnam.death.innerText		=	this.__f(_d.deaths);
 
 		emptyNode(this.provinceList);
 		this.provinceListTitle.innerText = `${this.data.vietnam.list.length} Tỉnh Thành Có Ca Nhiễm COVID-19`;

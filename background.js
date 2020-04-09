@@ -6,8 +6,9 @@
 //? |-----------------------------------------------------------------------------------------------|
 
 const SERVER = [
+	"https://ncov-data.000webhostapp.com",
 	"https://ncov-data.herokuapp.com",
-	"http://coronastatus.000webhostapp.com"
+	"https://corona-tracker-data.herokuapp.com"
 ]
 
 const API = {
