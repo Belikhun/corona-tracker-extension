@@ -6,6 +6,7 @@
 //? |-----------------------------------------------------------------------------------------------|
 
 const SERVER = [
+	"https://dealhuntersuite.com",
 	"https://ncov-data.herokuapp.com",
 	"https://corona-tracker-data.herokuapp.com",
 	"https://ncov-data.000webhostapp.com"
@@ -23,7 +24,12 @@ const core = {
 		lastUpdate:		$("#vietnamLastUpdate"),
 		confirmed:		$("#vietnamConfirmed"),
 		recovered:		$("#vietnamRecovered"),
-		death:			$("#vietnamDeath"),
+		deaths:			$("#vietnamDeaths"),
+		bar: {
+			confirmed:		$("#vietnamBarConfirmed"),
+			recovered:		$("#vietnamBarRecovered"),
+			deaths:			$("#vietnamBarDeaths"),
+		}
 	},
 
 	world: {
@@ -31,7 +37,12 @@ const core = {
 		lastUpdate:		$("#worldLastUpdate"),
 		confirmed:		$("#worldConfirmed"),
 		recovered:		$("#worldRecovered"),
-		death:			$("#worldDeath"),
+		deaths:			$("#worldDeaths"),
+		bar: {
+			confirmed:		$("#worldBarConfirmed"),
+			recovered:		$("#worldBarRecovered"),
+			deaths:			$("#worldBarDeaths"),
+		}
 	},
 
 	provinceList: $("#provinceList"),
@@ -77,26 +88,61 @@ const core = {
 		return new Intl.NumberFormat().format(n)
 	},
 
+	dataSave(data) {
+		return new Promise((resolve, reject) => {
+			chrome.storage.local.set(data, (res) => {
+				clog("OKAY", "Data saved into chrome storage", data);
+				resolve(res);
+			});
+		})
+	},
+
+	reset() {
+		this.world.bar.confirmed.style.width = "0";
+		this.world.bar.recovered.style.width = `0`;
+		this.world.bar.deaths.style.left = `0`;
+		this.world.bar.deaths.style.width = `0`;
+		this.vietnam.bar.confirmed.style.width = "0";
+		this.vietnam.bar.recovered.style.width = `0`;
+		this.vietnam.bar.deaths.style.left = `0`;
+		this.vietnam.bar.deaths.style.width = `0`;
+	},
+
 	update() {
 		let _g = this.data.global;
 		let _d = this.data.vietnam;
 
-
 		this.world.lastUpdate.innerText	=	(new Date(this.data.global.update * 1000)).toLocaleString();
 		this.world.confirmed.innerText	=	this.__f(_g.confirmed);
 		this.world.recovered.innerText	=	this.__f(_g.recovered);
-		this.world.death.innerText		=	this.__f(_g.deaths);
+		this.world.deaths.innerText		=	this.__f(_g.deaths);
+		this.world.bar.confirmed.style.width = "100%";
 
 		this.vietnam.lastUpdate.innerText	= (new Date(this.data.vietnam.update * 1000)).toLocaleString();
 		this.vietnam.confirmed.innerText	=	this.__f(_d.confirmed);
 		this.vietnam.recovered.innerText	=	this.__f(_d.recovered);
-		this.vietnam.death.innerText		=	this.__f(_d.deaths);
+		this.vietnam.deaths.innerText		=	this.__f(_d.deaths);
+		this.vietnam.bar.confirmed.style.width = "100%";
+
+		setTimeout(() => {
+			this.world.bar.recovered.style.width = `${(_g.recovered / _g.confirmed) * 100}%`;
+			this.vietnam.bar.recovered.style.width = `${(_d.recovered / _d.confirmed) * 100}%`;
+
+			setTimeout(() => {
+				this.world.bar.deaths.style.left = `${(_g.recovered / _g.confirmed) * 100}%`;
+				this.world.bar.deaths.style.width = `${(_g.deaths / _g.confirmed) * 100}%`;
+				this.vietnam.bar.deaths.style.left = `${(_d.recovered / _d.confirmed) * 100}%`;
+				this.vietnam.bar.deaths.style.width = `${(_d.deaths / _d.confirmed) * 100}%`;
+			}, 300);
+		}, 100);
 
 		emptyNode(this.provinceList);
 		this.provinceListTitle.innerText = `${this.data.vietnam.list.length} Tỉnh Thành Có Ca Nhiễm COVID-19`;
 		let vietnamConfirmedMax = Math.max(...this.data.vietnam.list.map((i) => i.confirmed));
 
-		for (let item of this.data.vietnam.list) {
+		for (let i = 0; i < this.data.vietnam.list.length; i++) {
+			let item = this.data.vietnam.list[i];
+
 			let _n = buildElementTree("div", "item", [
 				{ type: "t", class: "name", name: "name", text: item.name },
 				{ type: "span", class: "info", name: "info" },
@@ -120,7 +166,7 @@ const core = {
 				_n.obj.bar.confirmed.style.width = `${item.confirmed / vietnamConfirmedMax * 100}%`;
 				_n.obj.bar.recovered.style.width = `${item.recovered / vietnamConfirmedMax * 100}%`;
 				_n.obj.bar.deaths.style.width = `${item.deaths / vietnamConfirmedMax * 100}%`;
-			}, 200);
+			}, 200 * (i + 1));
 
 			_n.obj.title = [
 				`Cập nhật lúc ${(new Date(item.update * 1000)).toLocaleString()}`,
@@ -134,9 +180,10 @@ const core = {
 
 	async reloadData() {
 		this.loadingWrapper.style.display = "flex";
+		this.reset();
 
-		let popupAttemptNode = document.createElement("t");
-		popupAttemptNode.classList.add("popupConnectAttempt");
+		let popupAttemptNode = document.createElement("pre");
+		popupAttemptNode.style.fontSize = "16px";
 
 		let attempt = 0;
 		let host = -1;
@@ -153,10 +200,20 @@ const core = {
 				data = await this.loadData(SERVER[host] + API.corona);
 			} catch(e) {
 				clog("ERRR", `Cannot connect to server ${SERVER[host]} (attempt ${attempt}):`, e);
+				popupAttemptNode.innerText = `${SERVER[host]} (lần thử ${attempt})`;
 
-				if (attempt > 3)
-					errorHandler(e);
+				if (attempt > 3 && !popup.showing)
+					popup.show({
+						windowTitle: document.title,
+						title: "Fetch Data Failed",
+						message: "Không thể kết nối tới máy chủ",
+						description: "Hiện đang thử kết nối lại",
+						level: "offline",
+						bgColor: "red",
+						additionalNode: popupAttemptNode
+					})
 
+				await delayAsync(2000);
 				continue;
 			}
 
@@ -167,6 +224,7 @@ const core = {
 		
 		this.data = data;
 		this.update();
+		await this.dataSave({ previousData: data.vietnam })
 
 		this.loadingWrapper.style.display = "none";
 	},

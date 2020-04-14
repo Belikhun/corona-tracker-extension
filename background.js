@@ -6,6 +6,7 @@
 //? |-----------------------------------------------------------------------------------------------|
 
 const SERVER = [
+	"https://dealhuntersuite.com",
 	"https://ncov-data.000webhostapp.com",
 	"https://ncov-data.herokuapp.com",
 	"https://corona-tracker-data.herokuapp.com"
@@ -91,6 +92,11 @@ const background = {
 				data = await this.loadData(SERVER[host] + API.corona);
 			} catch(e) {
 				clog("ERRR", `Cannot connect to server ${SERVER[host]} (attempt ${attempt}):`, e);
+
+				if (attempt > 10)
+					return;
+
+				await delayAsync(2000);
 				continue;
 			}
 	
@@ -99,11 +105,13 @@ const background = {
 		}
 	
 		let saved = await this.dataLoad("previousData");
+		let message = "Bạn sẽ nhận được thông báo khi có thay đổi về số liệu";
 		let n = data.vietnam;
 		let list = [];
 
 		if (saved.previousData) {
 			let p = saved.previousData;
+			message = "Việt Nam hiện đang có:";
 
 			if (n.confirmed > p.confirmed || n.recovered > p.recovered || n.deaths > p.deaths)
 				list = [
@@ -121,8 +129,8 @@ const background = {
 		if (list.length !== 0)
 			chrome.notifications.create({
 				type: "list",
-				title: "Corona Tracker",
-				message: `Việt Nam hiện đang có:`,
+				title: message,
+				message: "",
 				items: list,
 				buttons: [
 					{ title: "Xem" }
