@@ -8,8 +8,7 @@
 const SERVER = [
 	"https://dealhuntersuite.com",
 	"https://ncov-data.herokuapp.com",
-	"https://corona-tracker-data.herokuapp.com",
-	"https://ncov-data.000webhostapp.com"
+	"https://corona-tracker-data.herokuapp.com"
 ]
 
 const API = {
@@ -230,7 +229,7 @@ const core = {
 	},
 
 	async loadData(url) {
-		let response = await myajax({ url, method: "GET" });
+		let response = await myajax({ url, method: "GET", changeState: false });
 
 		if (response.data.message)
 			throw { code: -1, description: `Error While Fetching Data: ${response.data.message}` }

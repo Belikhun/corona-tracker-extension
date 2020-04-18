@@ -7,7 +7,6 @@
 
 const SERVER = [
 	"https://dealhuntersuite.com",
-	"https://ncov-data.000webhostapp.com",
 	"https://ncov-data.herokuapp.com",
 	"https://corona-tracker-data.herokuapp.com"
 ]
@@ -21,6 +20,8 @@ const background = {
 	updateTimeout: null,
 
 	init() {
+		__connection__.enabled = false;
+		
 		chrome.notifications.onButtonClicked.addListener(() => chrome.windows.create({
 			url: chrome.extension.getURL("/mainPage/index.html"),
 			width: 800,
@@ -65,7 +66,7 @@ const background = {
 	},
 
 	async loadData(url) {
-		let response = await myajax({ url, method: "GET" });
+		let response = await myajax({ url, method: "GET", changeState: false });
 
 		if (response.data.message)
 			throw { code: -1, description: `Error While Fetching Data: ${response.data.message}` }
