@@ -16,7 +16,7 @@ const API = {
 }
 
 const background = {
-	UPDATE_INTERVAL: 600000,
+	UPDATE_INTERVAL: 300000,
 	updateTimeout: null,
 
 	init() {
