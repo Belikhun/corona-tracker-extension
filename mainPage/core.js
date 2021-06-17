@@ -71,7 +71,7 @@ const core = {
 
 	async __reloadHandler() {
         clearTimeout(this.reloadTimeout);
-        var timer = new stopClock();
+        var timer = new StopClock();
 
         try {
             await this.reloadData();
@@ -158,7 +158,7 @@ const core = {
 			_n.obj.bar.recovered.dataset.color = "green";
 			_n.obj.bar.deaths.dataset.color = "red";
 			_n.obj.bar.deaths.dataset.blink = "grow";
-			_n.obj.bar.deaths.style.left = `${item.recovered / _d.confirmed * 100}%`;
+			_n.obj.bar.deaths.style.left = `${item.recovered / vietnamConfirmedMax * 100}%`;
 			_n.obj.info.innerHTML = `<yl>${item.confirmed}</yl><s></s><gr>${item.recovered}</gr><s></s><rd>${item.deaths}</rd>`;
 
 			setTimeout(() => {

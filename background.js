@@ -35,7 +35,7 @@ const background = {
 
 	async __updateHandler() {
         clearTimeout(this.updateTimeout);
-        var timer = new stopClock();
+        var timer = new StopClock();
 
         try {
             await this.update();
