@@ -1,6 +1,6 @@
 {
     "name": "Thông tin dịch COVID-19",
-    "version": "2.5",
+    "version": "2.6",
     "description": "Kiểm tra và theo dõi thông tin dịch Corona",
     "manifest_version": 2,
     "minimum_chrome_version": "16.0.884",
