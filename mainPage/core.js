@@ -54,8 +54,15 @@ const core = {
 		__connection__.enabled = false;
 		popup.init();
 
-		triBg(this.vietnam.container, { color: "darkRed" });
-		triBg(this.world.container, { color: "dark" });
+		triBg(this.vietnam.container, {
+			color: "darkRed",
+			scale: 4
+		});
+
+		triBg(this.world.container, {
+			color: "darkBlue",
+			scale: 4
+		});
 
 		await this.__reloadHandler();
 		$("#popout").addEventListener("mouseup", () => {
@@ -66,6 +73,10 @@ const core = {
 				type: "panel",
 				setSelfAsOpener: true
 			});
+		});
+
+		new Scrollable(this.provinceList.parentElement, {
+			content: this.provinceList
 		});
 	},
 
@@ -151,7 +162,7 @@ const core = {
 					{ type: "span", class: "bar", name: "recovered" },
 					{ type: "span", class: "bar", name: "deaths" }
 				]}
-			])
+			]);
 
 			this.provinceList.appendChild(_n.tree);
 			_n.obj.bar.confirmed.dataset.color = "yellow";
